@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# Check JavaScript code style
+RUN_ESLINT=1
+RUN_FLOW=1
+ESLINT_PATH=`command -v ./node_modules/.bin/eslint`
+FLOW_PATH=`command -v ./node_modules/.bin/flow`
+JSFILES=$(git diff-index --name-status --cached HEAD | grep -v ^D | egrep '.js$|.jsx$' | cut -c3-)
+if [ -z "$JSFILES" ]; then
+    echo -e '\e[38;5;34m\e[1m'"No JavaScript file changed for this commit.\e[0m"
+    RUN_ESLINT=0
+    RUN_FLOW=0
+elif [ -z "$ESLINT_PATH" ]; then
+    echo -e '\e[38;5;196m\e[1m'"Warning: You can't check the JS coding style.\e[0m"
+    echo -e '\e[38;5;196m\e[1m'"You need to download and install eslint and set ESLINT_PATH to its path.\e[0m"
+    RUN_ESLINT=0
+elif [ -z "$FLOW_PATH" ]; then
+    echo -e '\e[38;5;196m\e[1m'"Warning: You can't check static type in JS.\e[0m"
+    echo -e '\e[38;5;196m\e[1m'"You need to download and install flow and set FLOW_PATH to its path.\e[0m"
+    RUN_FLOW=0
+fi
+# Ensuring proper coding style
+if [ $RUN_ESLINT -ne 0 ]; then
+     echo -e '\e[38;5;4m\e[1m'"Checking JS style errors:\e[0m"
+    echo -e '\e[38;5;4m\e[1m'$JSFILES"\e[0m" | tr " " "\n"
+    OUT=`$ESLINT_PATH -c ./.eslintrc $JSFILES`
+    CODE=$?
+    if [ $CODE -ne 0 ]; then
+        echo -e '\e[38;5;196m\e[1m'"JavaScript style errors found:\e[0m"
+        echo "$OUT"
+        echo -en '\e[38;5;196m\e[1m'"Please fix and stage the files before commiting again.\e[0m"
+        exit $CODE
+    else
+        echo -e '\e[38;5;34m\e[1m'"No JS code style errors found.\e[0m"
+    fi
+fi
+
+# Ensuring proper static types
+if [ $RUN_FLOW -ne 0 ]; then
+     echo -e '\e[38;5;4m\e[1m'"Checking static types in JS code:\e[0m"
+    echo -e '\e[38;5;4m\e[1m'$JSFILES"\e[0m" | tr " " "\n"
+    OUT=`$FLOW_PATH`
+    CODE=$?
+    if [ $CODE -ne 0 ]; then
+        echo -e '\e[38;5;196m\e[1m'"JavaScript static types errors found:\e[0m"
+        echo "$OUT"
+        echo -en '\e[38;5;196m\e[1m'"Please fix and stage the files before commiting again.\e[0m"
+        exit $CODE
+    else
+        echo -e '\e[38;5;34m\e[1m'"No JS static types errors found.\e[0m"
+    fi
+fi

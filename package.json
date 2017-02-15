@@ -1,0 +1,39 @@
+{
+  "name": "meteor-react-redux-template",
+  "private": true,
+  "scripts": {
+    "postinstall": "if [ -a .git ]; then ln -s -f ./../../.hooks/pre-commit ./.git/hooks/pre-commit; fi",
+    "lint": "./node_modules/.bin/eslint `find ./client/ -regextype sed -regex '.*.jsx\\|.*.js'` `find ./server/ -regextype sed -regex '.*.jsx\\|.*.js'`",
+    "flow": "./node_modules/.bin/flow",
+    "flow-stop": "npm run flow -- stop",
+    "start": "meteor run"
+  },
+  "dependencies": {
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-runtime": "6.18.0",
+    "classnames": "^2.2.5",
+    "meteor-node-stubs": "~0.2.0",
+    "react": "^15.4.2",
+    "react-paginate": "^4.1.1",
+    "react-redux": "^5.0.2",
+    "redux": "^3.6.0",
+    "redux-logger": "^2.8.1",
+    "redux-thunk": "^2.2.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-function-bind": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-regenerator": "^6.22.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2016": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
+    "babel-runtime": "^6.18.0",
+    "eslint": "^3.15.0",
+    "eslint-plugin-babel": "^4.0.1",
+    "eslint-plugin-react": "^6.9.0",
+    "flow-bin": "^0.39.0"
+  }
+}
